@@ -8,11 +8,13 @@
 #include <GL\freeglut.h>
 #include "Vector3.h"
 #include "Matrix4f.h"
+#include "Pipeline.h"
 
 using namespace std;
 
 GLuint VBO;
 GLuint gWorldLocation;
+GLuint IBO; 
 
 const char* pVSFileName = "Shaders\\shader.vs";
 const char* pFSFileName = "Shaders\\shader.fs";
@@ -22,22 +24,24 @@ static void RenderSceneCB() {
 
 	static float Scale = 0.0f;
 
-	Scale += 0.001f;
+	Scale += 0.005f;
 
-	Matrix4f World;
+	Pipeline p;
+	p.Scale(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f));
+	p.WorldPos(sinf(Scale), 0.0f, 0.0f);
+	//p.Rotate(sinf(Scale) * 90.0f, sinf(Scale) * 90.0f, sinf(Scale) * 90.0f);
+	p.Rotate(0.0f,0.0f, sinf(Scale) * 90.0f);
 
-	World.m[0][0] = 1.0f; World.m[0][1] = 0.0f; World.m[0][2] = 0.0f; World.m[0][3] = sinf(Scale);
-	World.m[1][0] = 0.0f; World.m[1][1] = 1.0f; World.m[1][2] = 0.0f; World.m[1][3] = 0.0f;
-	World.m[2][0] = 0.0f; World.m[2][1] = 0.0f; World.m[2][2] = 1.0f; World.m[2][3] = 0.0f;
-	World.m[3][0] = 0.0f; World.m[3][1] = 0.0f; World.m[3][2] = 0.0f; World.m[3][3] = 1.0f;
-
-	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World.m[0][0]);
+	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, (const GLfloat *)p.GetTrans());
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+
 
 	glDisableVertexAttribArray(0);
 
@@ -53,16 +57,26 @@ static void InitializeGlutCallbacks()
 
 static void CreateVertexBuffer()
 {
-	Vector3 Vertices[3];
-	Vertices[0] = Vector3(-0.5f, -0.5f, 0.0f);
-	Vertices[1] = Vector3(-0.5f, 0.5f, 0.0f);
-	Vertices[2] = Vector3(0.5f, 0.5f, 0.0f);
-
-
+	Vector3 Vertices[4];
+	Vertices[0] = Vector3(-1.0f, -1.0f, 0.0f);
+	Vertices[1] = Vector3(0.0f, -1.0f, 1.0f);
+	Vertices[2] = Vector3(1.0f, -1.0f, 0.0f);
+	Vertices[3] = Vector3(0.0f, 1.0f, 0.0f);
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+}
+static void CreateIndexBuffer() {
+	unsigned int Indices[] = { 0, 3, 1,
+		1, 3, 2,
+		2, 3, 0,
+		0, 1, 2 };
+
+
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
 {
@@ -163,7 +177,8 @@ int main(int argc, char** argv) {
 	glClearColor(0.5f, 0.2f, 0.0f, 0.0f);
 	
 	CreateVertexBuffer();
-	
+	CreateIndexBuffer();
+
 	CompileShaders();
 
 	glutMainLoop();

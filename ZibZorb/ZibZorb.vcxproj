@@ -122,10 +122,12 @@
   <ItemGroup>
     <ClCompile Include="Matrix4f.cpp" />
     <ClCompile Include="OpenGL_TEST.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix4f.h" />
+    <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
