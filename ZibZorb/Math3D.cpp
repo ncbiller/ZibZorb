@@ -1,8 +1,23 @@
+
 #define _USE_MATH_DEFINES
 
+#include "Math3D.h"
 #include <cmath>
-#include "Vector3.h"
-#include "Matrix4f.h"
+#include <iostream>
+
+
+Vector3::Vector3()
+{
+}
+
+Vector3::Vector3(float x, float y, float z) : X(x), Y(y), Z(z)
+{
+}
+
+
+Vector3::~Vector3()
+{
+}
 
 
 Matrix4f::Matrix4f()

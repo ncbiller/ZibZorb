@@ -1,4 +1,18 @@
 #pragma once
+class Vector3
+{
+public:
+	Vector3();
+
+	Vector3(float x, float y, float z);
+
+	~Vector3();
+	float X;
+	float Y;
+	float Z;
+};
+
+
 
 struct PersProjInfo
 {
@@ -19,7 +33,7 @@ public:
 	static float ToRadian(float Degrees);
 	static float ToDegrees(float Radians);
 	~Matrix4f();
-	
+
 	float m[4][4];
 
 	inline Matrix4f operator*(const Matrix4f& Right) const;
@@ -29,4 +43,3 @@ public:
 	void InitRotationTransform(float RotX, float RotY, float RotZ);
 	void InitPerspectiveProj(const PersProjInfo& p);
 };
-

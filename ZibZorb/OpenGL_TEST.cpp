@@ -38,7 +38,7 @@ static void RenderSceneCB() {
 	//p.Rotate(0.0f,0.0f, sinf(Scale) * 90.0f);
 	p.Scale(0.5, 0.5, 0.5);
 	p.Rotate(0.0f, Scale, 0.0f);
-	p.WorldPos(0.0f, 0.0f, -0.9f);
+	p.WorldPos(0.0f, 0.0f, 10.0f);
 
 	p.SetPerspectiveProj(gPersProjInfo);
 
@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
 
 	CompileShaders();
 
-	gPersProjInfo.FOV = 30.0f;
+	gPersProjInfo.FOV = 45.0f;
 	gPersProjInfo.Height = WINDOW_HEIGHT;
 	gPersProjInfo.Width = WINDOW_WIDTH;
 	gPersProjInfo.zNear = 1.0f;
