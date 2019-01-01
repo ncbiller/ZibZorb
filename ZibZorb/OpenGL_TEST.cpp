@@ -10,11 +10,16 @@
 #include "Matrix4f.h"
 #include "Pipeline.h"
 
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
+
 using namespace std;
 
 GLuint VBO;
 GLuint gWorldLocation;
 GLuint IBO; 
+PersProjInfo gPersProjInfo;
+
 
 const char* pVSFileName = "Shaders\\shader.vs";
 const char* pFSFileName = "Shaders\\shader.fs";
@@ -24,13 +29,19 @@ static void RenderSceneCB() {
 
 	static float Scale = 0.0f;
 
-	Scale += 0.005f;
+	Scale += 0.1f;
 
 	Pipeline p;
-	p.Scale(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f));
-	p.WorldPos(sinf(Scale), 0.0f, 0.0f);
+	//p.Scale(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f));
+	//p.WorldPos(sinf(Scale), 0.0f, 0.0f);
 	//p.Rotate(sinf(Scale) * 90.0f, sinf(Scale) * 90.0f, sinf(Scale) * 90.0f);
-	p.Rotate(0.0f,0.0f, sinf(Scale) * 90.0f);
+	//p.Rotate(0.0f,0.0f, sinf(Scale) * 90.0f);
+	p.Scale(0.5, 0.5, 0.5);
+	p.Rotate(0.0f, Scale, 0.0f);
+	p.WorldPos(0.0f, 0.0f, -0.9f);
+
+	p.SetPerspectiveProj(gPersProjInfo);
+
 
 	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, (const GLfloat *)p.GetTrans());
 
@@ -161,7 +172,7 @@ static void CompileShaders()
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(1024, 768);                    // window size
+	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);                    // window size
 	glutInitWindowPosition(100, 100);                // distance from the top-left screen
 	glutCreateWindow("ZibZorb");    // message displayed on top bar window
 	
@@ -180,6 +191,12 @@ int main(int argc, char** argv) {
 	CreateIndexBuffer();
 
 	CompileShaders();
+
+	gPersProjInfo.FOV = 30.0f;
+	gPersProjInfo.Height = WINDOW_HEIGHT;
+	gPersProjInfo.Width = WINDOW_WIDTH;
+	gPersProjInfo.zNear = 1.0f;
+	gPersProjInfo.zFar = 100.0f;
 
 	glutMainLoop();
 	return 0;

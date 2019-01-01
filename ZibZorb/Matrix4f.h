@@ -3,8 +3,8 @@ class Matrix4f
 {
 public:
 	Matrix4f();
-	float ToRadian(float Degrees);
-	float ToDegrees(float Radians);
+	static float ToRadian(float Degrees);
+	static float ToDegrees(float Radians);
 	~Matrix4f();
 	
 	float m[4][4];
